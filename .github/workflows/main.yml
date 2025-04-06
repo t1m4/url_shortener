@@ -21,8 +21,7 @@ jobs:
           - name: Connect to server and execute command
             run: |
                 ssh -o StrictHostKeyChecking=no -i private_key $HOST_USER@$HOST_ADDRESS << EOF
-                  ls
-                  cd projects/go_servers/
+                  cd projects/go_server
                   git pull origin master
                   docker-compose down
                   docker-compose up -d app

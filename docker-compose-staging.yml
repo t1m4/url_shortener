@@ -8,13 +8,18 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    environment:
+      DOMAIN: ${DOMAIN}
+      SERVER_HOST: ${SERVER_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_DSN: ${POSTGRES_DSN}
 
   db:
     image: postgres:17.4
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-test}
-      POSTGRES_USER: ${POSTGRES_USER:-test}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-test}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - db:/data/postgresql/
     ports:

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"time"
 	"url_shortener/internal/handlers/url_shortener"
@@ -13,7 +13,7 @@ import (
 func New(services *services.Service) {
 	urlShortenerHandler := url_shortener.New(services)
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		log.Println(time.Now(), r.URL.Query(), r.Method, r.Host)
+		fmt.Fprintf(w, "Hello, you've requested: %s, %s\n", r.URL.Path, time.Now())
 	})
 	fs := http.FileServer(http.Dir("static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))

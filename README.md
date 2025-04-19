@@ -22,4 +22,3 @@ curl -v "http://localhost:8000/api/short_url" -d '{"url": "https://gorm.io/docs/
 ```
 http://localhost:8000/api/x3UlUaD
 ```
-

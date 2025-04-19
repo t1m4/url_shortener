@@ -1,0 +1,28 @@
+name: Deploy
+on:
+    push:
+      branches: [ "master" ]
+jobs:
+    deploy:
+      runs-on: ubuntu-latest
+      environment: staging
+      env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          HOST_USER: ${{ secrets.HOST_USER }}
+          HOST_ADDRESS: ${{ secrets.HOST_ADDRESS }}
+      steps:
+          - uses: actions/checkout@v4
+          - name: Load and create private key
+            run: |
+                echo '-----BEGIN OPENSSH PRIVATE KEY-----' > private_key
+                echo $SSH_PRIVATE_KEY >> private_key
+                echo '-----END OPENSSH PRIVATE KEY-----' >> private_key
+                chmod 600 private_key
+          - name: Connect to server and execute command
+            run: |
+                ssh -o StrictHostKeyChecking=no -i private_key $HOST_USER@$HOST_ADDRESS << EOF
+                  cd projects/go_server
+                  git pull origin master
+                  docker-compose down
+                  docker-compose up -d app
+                EOF

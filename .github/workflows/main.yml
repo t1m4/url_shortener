@@ -10,12 +10,6 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           HOST_USER: ${{ secrets.HOST_USER }}
           HOST_ADDRESS: ${{ secrets.HOST_ADDRESS }}
-          DOMAIN: ${{vars.DOMAIN}}
-          SERVER_HOST: ${{vars.SERVER_HOST}}
-          POSTGRES_DB: ${{vars.POSTGRES_DB}}
-          POSTGRES_USER: ${{vars.POSTGRES_USER}}
-          POSTGRES_PASSWORD: ${{vars.POSTGRES_PASSWORD}}
-          POSTGRES_DSN: ${{vars.POSTGRES_DSN}}
           ENV_FILE: ${{vars.ENV_FILE}}
 
       steps:

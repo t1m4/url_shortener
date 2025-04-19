@@ -1,8 +1,8 @@
 package configs
 
 const (
-	DEV  = "dev"
-	PROD = "prod"
+	DEV     = "dev"
+	STAGING = "staging"
 )
 
 const (

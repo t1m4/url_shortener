@@ -10,6 +10,14 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           HOST_USER: ${{ secrets.HOST_USER }}
           HOST_ADDRESS: ${{ secrets.HOST_ADDRESS }}
+          ENVIRONMENT: staging
+          DOMAIN: ${{vars.DOMAIN}}
+          SERVER_HOST: ${{vars.SERVER_HOST}}
+          POSTGRES_DB: ${{vars.POSTGRES_DB}}
+          POSTGRES_USER: ${{vars.POSTGRES_USER}}
+          POSTGRES_PASSWORD: ${{vars.POSTGRES_PASSWORD}}
+          POSTGRES_DSN: ${{vars.POSTGRES_DSN}}
+
       steps:
           - uses: actions/checkout@v4
           - name: Load and create private key
@@ -24,6 +32,6 @@ jobs:
                   cd projects/go_server
                   echo HOST_USER $HOST_USER
                   git pull origin master
-                  docker compose -f docker-compose-staging down
-                  docker compose -f docker-compose-staging up -d app
+                  docker compose -f docker-compose-staging.yml down
+                  docker compose -f docker-compose-staging.yml up -d app
                 EOF

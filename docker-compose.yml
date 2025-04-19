@@ -7,11 +7,20 @@ services:
     env_file:
       - .env
     ports:  
-      - "8000:8000"
+      - "8000-8003:8000"
     depends_on:
       - db
     volumes:
       - .:/usr/src/app
+    deploy:
+      mode: replicated
+      replicas: 4
+      # endpoint_mode: vip
+      endpoint_mode: dnsrr
+      # resources:
+      #   limits:
+      #     cpus: '8'
+      #     memory: 4000M
 
   db:
     image: postgres:17.4
@@ -20,6 +29,13 @@ services:
     volumes:
       - db:/data/postgresql/
     command: ["postgres", "-c", "log_statement=all"]
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:  
+      - "80:80"
 
 volumes:
   db:

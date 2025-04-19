@@ -32,6 +32,6 @@ jobs:
                   cd projects/go_server
                   echo HOST_USER $HOST_USER $ENVIRONMENT $POSTGRES_DSN
                   git pull origin master
-                  # docker compose -f docker-compose-staging.yml down
-                  # docker compose -f docker-compose-staging.yml up -d app
+                  docker compose -f docker-compose-staging.yml down
+                  docker compose -f docker-compose-staging.yml up -d app
                 EOF

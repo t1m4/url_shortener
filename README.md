@@ -24,5 +24,5 @@ curl -v "http://localhost:8000/api/short_url" -d '{"url": "https://gorm.io/docs/
 
 - Redirect url
 ```
-http://localhost:8000/api/x3UlUaD
+curl -v http://localhost:8000/api/x3UlUaD
 ```

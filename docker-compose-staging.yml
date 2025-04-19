@@ -3,15 +3,13 @@ services:
   app:
     build:
       context: .
-      dockerfile: dockerfiles/Dockerfile.dev
+      dockerfile: dockerfiles/Dockerfile
     env_file:
       - .env
     ports:  
       - "8000:8000"
     depends_on:
       - db
-    volumes:
-      - .:/usr/src/app
 
   db:
     image: postgres:17.4
@@ -23,7 +21,6 @@ services:
       - db:/data/postgresql/
     ports:
       - "5433:5432"
-    command: ["postgres", "-c", "log_statement=all"]
 
 volumes:
   db:

@@ -31,3 +31,5 @@ dc-test-cov: dc-up
 	docker compose exec app go test -coverprofile=artifacts/coverage.out ./...
 	docker compose exec app go tool cover -html=artifacts/coverage.out -o artifacts/coverage.html 
 
+dc-stage-logs:
+	docker compose -f docker-compose-staging.yml logs -f $(args)

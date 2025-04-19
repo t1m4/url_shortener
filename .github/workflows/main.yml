@@ -31,8 +31,6 @@ jobs:
             run: |
                 ssh -o StrictHostKeyChecking=no -i private_key $HOST_USER@$HOST_ADDRESS << EOF
                   cd projects/go_server
-                  echo HOST_USER $HOST_USER $ENVIRONMENT $POSTGRES_DSN
-                  echo ENV_FILE $ENV_FILE
                   echo "$ENV_FILE" > .env
                   git pull origin master
                   docker compose -f docker-compose-staging.yml down

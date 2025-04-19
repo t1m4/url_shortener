@@ -1,5 +1,9 @@
 # URL shortener
 
+## Branches
+- master - url shortener realization with go and postgres
+- app_replicas_docker - extended master branch with nginx as reversed proxy and several replicas of app
+
 ## Requirements
 - Shorneting urls. Endpoint for creating short url.
     - Check url for availability. Create API client to do it.

@@ -4,14 +4,18 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+	"url_shortener/configs"
 	"url_shortener/internal/handlers/url_shortener"
+	"url_shortener/internal/logger"
+	"url_shortener/internal/middleware"
 	"url_shortener/internal/services"
 
 	"github.com/gorilla/mux"
 )
 
-func New(services *services.Service) {
-	urlShortenerHandler := url_shortener.New(services)
+func New(config *configs.Config, l logger.Logger, services *services.Service) {
+	middleware := middleware.New(config, l, services)
+	urlShortenerHandler := url_shortener.New(l, services)
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello, you've requested: %s, %s\n", r.URL.Path, time.Now())
 	})
@@ -24,6 +28,7 @@ func New(services *services.Service) {
 	api.HandleFunc("/check", urlShortenerHandler.UrlChecker).Methods("GET")
 	api.HandleFunc("/short_url", urlShortenerHandler.ShortUrl).Methods("POST")
 	api.HandleFunc("/{url:[a-zA-Z0-9]+}", urlShortenerHandler.RedirectUrl).Methods("GET")
+	api.Use(middleware.CheckRateLimitMiddleware)
 	http.Handle("/", r)
 
 }

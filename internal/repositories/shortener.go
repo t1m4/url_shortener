@@ -3,9 +3,9 @@ package repositories
 import (
 	"errors"
 	"fmt"
-	"log"
 	"url_shortener/internal/custom_errors"
 	"url_shortener/internal/db"
+	"url_shortener/internal/logger"
 	"url_shortener/internal/schemas"
 
 	"gorm.io/gorm"
@@ -16,11 +16,12 @@ type ShortenerRepository interface {
 	GetShortener(string) (string, error)
 }
 type shortenerRepository struct {
+	l  logger.Logger
 	db *gorm.DB
 }
 
-func NewShorternerRepository(db *gorm.DB) ShortenerRepository {
-	return &shortenerRepository{db}
+func NewShorternerRepository(l logger.Logger, db *gorm.DB) ShortenerRepository {
+	return &shortenerRepository{l, db}
 }
 
 func (s *shortenerRepository) InsertShortener(urlInput *schemas.URLInput, newLink string) (*db.Shortener, error) {
@@ -32,7 +33,7 @@ func (s *shortenerRepository) InsertShortener(urlInput *schemas.URLInput, newLin
 		result := tx.Create(&shortener)
 		if result.Error != nil {
 			tx.Commit()
-			log.Println(result.Error)
+			s.l.Error(result.Error)
 			return nil, fmt.Errorf(custom_errors.DbError)
 		}
 	}
@@ -46,7 +47,7 @@ func (s *shortenerRepository) GetShortener(newLink string) (string, error) {
 	result := tx.Select("id", "link").Where("new_link = ?", newLink).First(&shortener)
 	if result.Error != nil {
 		tx.Commit()
-		log.Println(result.Error)
+		s.l.Error(result.Error)
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return "", fmt.Errorf(custom_errors.RowDoesNotExistError)
 		}

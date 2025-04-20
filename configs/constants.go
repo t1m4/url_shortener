@@ -6,6 +6,12 @@ const (
 )
 
 const (
+	DebugLevel = "DEBUG"
+	InfoLevel  = "INFO"
+	ErrorLevel = "ERROR"
+)
+
+const (
 	UrlLenght  = 7
 	Alphabet   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	Digits     = "0123456789"

@@ -4,19 +4,20 @@ import (
 	"log"
 	"os"
 	"url_shortener/configs"
+	"url_shortener/internal/logger"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	gorm_logger "gorm.io/gorm/logger"
 )
 
-func ConnectDB(config *configs.Config) *gorm.DB {
+func ConnectDB(config *configs.Config, logger logger.Logger) *gorm.DB {
 	gormConfig := gorm.Config{}
 	if config.ENVIRONMENT != configs.DEV {
-		gormConfig.Logger = logger.New(
+		gormConfig.Logger = gorm_logger.New(
 			log.New(os.Stdout, "\r\n", log.LstdFlags),
-			logger.Config{
-				LogLevel:             logger.Silent,
+			gorm_logger.Config{
+				LogLevel:             gorm_logger.Silent,
 				ParameterizedQueries: true,
 				Colorful:             false,
 			},
@@ -24,9 +25,10 @@ func ConnectDB(config *configs.Config) *gorm.DB {
 	}
 	db, err := gorm.Open(postgres.Open(config.POSTGRES_DSN), &gormConfig)
 
-	log.Println("Successfully connect to db: ", db)
+	logger.Debug("Successfully connect to db: ", db.Name())
+	logger.Info("Successfully connect to db: ", db.Name())
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		panic("failed to connect database")
 	}
 	db.AutoMigrate(&Shortener{})

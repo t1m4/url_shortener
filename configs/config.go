@@ -1,12 +1,15 @@
 package configs
 
-import "os"
+import (
+	"os"
+)
 
 type Config struct {
 	ENVIRONMENT  string
 	DOMAIN       string
 	SERVER_HOST  string
 	POSTGRES_DSN string
+	LOG_LEVEL    string
 }
 
 func LoadConfig() *Config {
@@ -15,5 +18,6 @@ func LoadConfig() *Config {
 		DOMAIN:       os.Getenv("DOMAIN"),
 		SERVER_HOST:  os.Getenv("SERVER_HOST"),
 		POSTGRES_DSN: os.Getenv("POSTGRES_DSN"),
+		LOG_LEVEL:    os.Getenv("LOG_LEVEL"),
 	}
 }

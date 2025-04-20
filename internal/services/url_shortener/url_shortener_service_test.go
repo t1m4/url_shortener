@@ -74,7 +74,6 @@ func TestShortURL(t *testing.T) {
 	for _, test := range tests {
 		service := fakeNewService(test)
 		actual, err := service.ShortURL(test.urlInput)
-		// log.Println("Started test - ", test.name)
 		if actual != test.resultUrl {
 			t.Error(fmt.Errorf("case: %s, actual result: %s, expected result: %s", test.name, actual, test.resultUrl))
 		}

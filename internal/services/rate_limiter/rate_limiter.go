@@ -11,8 +11,6 @@ import (
 
 type RateLimiter interface {
 	Wait(context.Context) error
-	Limit() rate.Limit
-	Tokens() float64
 	Allow() bool
 }
 
@@ -45,12 +43,12 @@ func (l *multiLimiter) Wait(ctx context.Context) error {
 	}
 	return nil
 }
-func (l *multiLimiter) Limit() rate.Limit {
-	return l.limiters[0].Limit()
-}
-func (l *multiLimiter) Tokens() float64 {
-	return l.limiters[0].Tokens()
-}
 func (l *multiLimiter) Allow() bool {
-	return l.limiters[0].Allow()
+	for _, limiter := range l.limiters {
+		isAllowed := limiter.Allow()
+		if !isAllowed {
+			return false
+		}
+	}
+	return true
 }

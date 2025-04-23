@@ -45,7 +45,7 @@ func (r *rateLimiterService) Check(userIdStr string) error {
 		r.l.Debug("Create new limiter for", userId)
 	}
 	r.userRateLimiterByUserId[userId].lastSeen = time.Now()
-	r.l.Debug(userId, userRateLimiter.lastSeen, userRateLimiter.limiter.Limit(), userRateLimiter.limiter.Tokens())
+	r.l.Debug(userId, userRateLimiter.lastSeen)
 	if !userRateLimiter.limiter.Allow() {
 		r.mu.Unlock()
 		return fmt.Errorf(custom_errors.RateLimitError)

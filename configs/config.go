@@ -26,7 +26,7 @@ type Config struct {
 func LoadConfig() (*Config, error) {
 	var configFileNameByEnv = map[string]string{
 		DEV:     "configs/local.yaml",
-		STAGING: "configs/stage.yaml",
+		STAGING: "configs/staging.yaml",
 	}
 	env := os.Getenv("ENVIRONMENT")
 	data, err := os.ReadFile(configFileNameByEnv[env])

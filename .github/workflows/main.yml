@@ -18,6 +18,7 @@ jobs:
           HOST_ADDRESS: ${{ secrets.HOST_ADDRESS }}
           ENV_FILE: ${{vars.ENV_FILE}}
           YAML_FILE: ${{vars.YAML_FILE}}
+          YAML_FILE_NAME: ${{vars.YAML_FILE_NAME}}
 
       steps:
           - uses: actions/checkout@v4
@@ -32,7 +33,7 @@ jobs:
                 ssh -o StrictHostKeyChecking=no -i private_key $HOST_USER@$HOST_ADDRESS << EOF
                   cd projects/go_server
                   echo "$ENV_FILE" > .env
-                  echo "$YAML_FILE" > configs/staging.yaml
+                  echo "$YAML_FILE" > configs/"$YAML_FILE_NAME"
                   git pull origin master
                   docker compose -f docker-compose-staging.yml stop app
                   docker compose -f docker-compose-staging.yml up --build -d app

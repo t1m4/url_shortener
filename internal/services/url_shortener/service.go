@@ -38,6 +38,6 @@ func (u *URLShortenerService) ShortURL(urlInput *schemas.URLInput) (string, erro
 	if err != nil {
 		return "", err
 	}
-	newUrl := strings.Join([]string{u.config.APP.DOMAIN, "/api/", shorneter.NewLink}, "")
+	newUrl := strings.Join([]string{u.config.App.Domain, "/api/", shorneter.NewLink}, "")
 	return newUrl, nil
 }

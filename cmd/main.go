@@ -31,7 +31,7 @@ func main() {
 	services := services.New(config, l, repositories)
 	services.Start()
 	handlers.New(config, l, services)
-	server := &http.Server{Addr: config.APP.SERVER_HOST}
+	server := &http.Server{Addr: config.App.ServerHost}
 
 	go func() {
 		errChan <- server.ListenAndServe()

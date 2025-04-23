@@ -1,10 +1,24 @@
-environment: dev
+Environment: dev
 
-app:
-  domain: http://localhost:8000
-  server_host: 0.0.0.0:8000
-db:
-  postgres_dsn: postgresql://admin:admin@db:5432/url_shortener
+App:
+  Domain: http://localhost:8000
+  ServerHost: 0.0.0.0:8000
+Db:
+  PostgresDsn: postgresql://admin:admin@db:5432/url_shortener
 
-logger:
-  level: DEBUG
+Logger:
+  Level: DEBUG
+
+RateLimiter:
+  CleaningPeriod: "1h"
+  ExpiresPeriod: "24h"
+  Limiters:
+    - Duration: "1s"
+      EventCount: 2
+      Burst: 4
+    - Duration: "1m"
+      EventCount: 10
+      Burst: 10
+    - Duration: "1h"
+      EventCount: 50
+      Burst: 50

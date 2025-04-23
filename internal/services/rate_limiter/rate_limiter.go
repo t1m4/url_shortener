@@ -3,7 +3,7 @@ package rate_limiter
 import (
 	"context"
 	"sort"
-	"time"
+	"url_shortener/configs"
 	"url_shortener/internal/logger"
 
 	"golang.org/x/time/rate"
@@ -28,13 +28,13 @@ func New(limiters ...*rate.Limiter) RateLimiter {
 	return &multiLimiter{limiters: limiters}
 }
 
-func DefaultAPILimiter(l logger.Logger) RateLimiter {
-	return New(
-		// TODO take from config
-		rate.NewLimiter(Per(l, 2, time.Second), 1),
-		rate.NewLimiter(Per(l, 10, time.Minute), 10),
-		rate.NewLimiter(Per(l, 50, time.Hour), 50),
-	)
+func DefaultAPILimiter(config *configs.Config, l logger.Logger) RateLimiter {
+	limiters := make([]*rate.Limiter, 0)
+	for _, limiterConfig := range config.RateLimiter.Limiters {
+		limiter := rate.NewLimiter(Per(l, limiterConfig.EventCount, limiterConfig.Duration), limiterConfig.Burst)
+		limiters = append(limiters, limiter)
+	}
+	return New(limiters...)
 }
 
 func (l *multiLimiter) Wait(ctx context.Context) error {

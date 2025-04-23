@@ -2,31 +2,44 @@ package configs
 
 import (
 	"os"
+	"time"
 
 	"gopkg.in/yaml.v3"
 )
 
-type Db struct {
-	POSTGRES_DSN string `yaml:"postgres_dsn"`
+type db struct {
+	PostgresDsn string `yaml:"PostgresDsn"`
 }
 type App struct {
-	DOMAIN      string `yaml:"domain"`
-	SERVER_HOST string `yaml:"server_host"`
+	Domain     string `yaml:"Domain"`
+	ServerHost string `yaml:"ServerHost"`
 }
-type Logger struct {
-	LEVEL string `yaml:"level"`
+type logger struct {
+	Level string `yaml:"Level"`
+}
+
+type Limiter struct {
+	Duration   time.Duration `yaml:"Duration"`
+	EventCount int           `yaml:"EventCount"`
+	Burst      int           `yaml:"Burst"`
+}
+type RateLimiterConfig struct {
+	CleaningPeriod time.Duration `yaml:"CleaningPeriod"`
+	ExpiresPeriod  time.Duration `yaml:"ExpiresPeriod"`
+	Limiters       []Limiter     `yaml:"Limiters"`
 }
 type Config struct {
-	ENVIRONMENT string `yaml:"environment"`
-	APP         App    `yaml:"app"`
-	DB          Db     `yaml:"db"`
-	LOGGER      Logger `yaml:"logger"`
+	Environment string            `yaml:"Environment"`
+	App         App               `yaml:"App"`
+	Db          db                `yaml:"Db"`
+	Logger      logger            `yaml:"Logger"`
+	RateLimiter RateLimiterConfig `yaml:"RateLimiter"`
 }
 
 func LoadConfig() (*Config, error) {
 	var configFileNameByEnv = map[string]string{
-		DEV:     "configs/local.yaml",
-		STAGING: "config.yaml",
+		Dev:     "configs/local.yaml",
+		Staging: "config.yaml",
 	}
 	env := os.Getenv("ENVIRONMENT")
 	data, err := os.ReadFile(configFileNameByEnv[env])

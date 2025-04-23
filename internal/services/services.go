@@ -23,7 +23,7 @@ type Service struct {
 func New(config *configs.Config, l logger.Logger, repositories *repositories.Repositories) *Service {
 	url_checker_service := url_checker.New()
 	apiClient := api_client.New(time.Minute)
-	rateLimiterService := rate_limiter.NewRateLimiterService(l)
+	rateLimiterService := rate_limiter.NewRateLimiterService(config, l)
 	return &Service{
 		apiClient:           apiClient,
 		URLCheckerService:   url_checker_service,

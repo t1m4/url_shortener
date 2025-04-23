@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"sync"
 	"time"
+	"url_shortener/configs"
 	"url_shortener/internal/custom_errors"
 	"url_shortener/internal/logger"
 )
@@ -20,14 +21,15 @@ type UserRateLimiter struct {
 	limiter  RateLimiter
 }
 type rateLimiterService struct {
+	config                  *configs.Config
 	l                       logger.Logger
 	userRateLimiterByUserId map[int]*UserRateLimiter
 	mu                      *sync.Mutex
 	done                    chan bool
 }
 
-func NewRateLimiterService(l logger.Logger) RateLimiterService {
-	return &rateLimiterService{l, make(map[int]*UserRateLimiter), &sync.Mutex{}, make(chan bool)}
+func NewRateLimiterService(config *configs.Config, l logger.Logger) RateLimiterService {
+	return &rateLimiterService{config, l, make(map[int]*UserRateLimiter), &sync.Mutex{}, make(chan bool)}
 }
 
 func (r *rateLimiterService) Check(userIdStr string) error {
@@ -38,7 +40,7 @@ func (r *rateLimiterService) Check(userIdStr string) error {
 	r.mu.Lock()
 	userRateLimiter, ok := r.userRateLimiterByUserId[userId]
 	if !ok {
-		userRateLimiter = &UserRateLimiter{limiter: DefaultAPILimiter(r.l)}
+		userRateLimiter = &UserRateLimiter{limiter: DefaultAPILimiter(r.config, r.l)}
 		r.userRateLimiterByUserId[userId] = userRateLimiter
 		r.l.Debug("Create new limiter for", userId)
 	}
@@ -53,8 +55,7 @@ func (r *rateLimiterService) Check(userIdStr string) error {
 }
 
 func (r *rateLimiterService) cleanUnusedRateLimiters() {
-	// TODO move to the config
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(r.config.RateLimiter.CleaningPeriod)
 	r.l.Info("Start clean rate limiters goroutine")
 	for {
 		select {
@@ -65,15 +66,13 @@ func (r *rateLimiterService) cleanUnusedRateLimiters() {
 			r.l.Debug("Current iteration", t, len(r.userRateLimiterByUserId))
 			r.mu.Lock()
 			for userId, userRateLimiter := range r.userRateLimiterByUserId {
-				// TODO move to the config
-				if time.Since(userRateLimiter.lastSeen) > 30*time.Second {
+				if time.Since(userRateLimiter.lastSeen) > r.config.RateLimiter.ExpiresPeriod {
 					r.l.Debug("Delete userId", userId, userRateLimiter.lastSeen, t)
 					delete(r.userRateLimiterByUserId, userId)
 				}
 			}
 			r.mu.Unlock()
 		}
-
 	}
 }
 

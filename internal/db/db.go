@@ -13,7 +13,7 @@ import (
 
 func ConnectDB(config *configs.Config, logger logger.Logger) *gorm.DB {
 	gormConfig := gorm.Config{}
-	if config.ENVIRONMENT != configs.DEV {
+	if config.Environment != configs.Dev {
 		gormConfig.Logger = gorm_logger.New(
 			log.New(os.Stdout, "\r\n", log.LstdFlags),
 			gorm_logger.Config{
@@ -23,7 +23,7 @@ func ConnectDB(config *configs.Config, logger logger.Logger) *gorm.DB {
 			},
 		)
 	}
-	db, err := gorm.Open(postgres.Open(config.DB.POSTGRES_DSN), &gormConfig)
+	db, err := gorm.Open(postgres.Open(config.Db.PostgresDsn), &gormConfig)
 
 	logger.Debug("Successfully connect to db: ", db.Name())
 	logger.Info("Successfully connect to db: ", db.Name())

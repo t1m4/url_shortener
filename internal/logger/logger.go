@@ -25,7 +25,7 @@ type logger struct {
 }
 
 func New(config *configs.Config) Logger {
-	l := log.New(os.Stdout, "", log.LstdFlags|log.Llongfile)
+	l := log.New(os.Stdout, "", log.LstdFlags|log.Lshortfile)
 	var logLevelMap = map[string]int{
 		configs.DebugLevel: DEBUG,
 		configs.InfoLevel:  INFO,

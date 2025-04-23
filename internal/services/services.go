@@ -23,11 +23,19 @@ type Service struct {
 func New(config *configs.Config, l logger.Logger, repositories *repositories.Repositories) *Service {
 	url_checker_service := url_checker.New()
 	apiClient := api_client.New(time.Minute)
+	rateLimiterService := rate_limiter.NewRateLimiterService(l)
 	return &Service{
 		apiClient:           apiClient,
 		URLCheckerService:   url_checker_service,
 		URLShortenerService: url_shortener.New(config, repositories, apiClient),
 		URLRedirectService:  url_redirect.New(repositories),
-		RateLimiterService:  rate_limiter.NewRateLimiterService(l),
+		RateLimiterService:  rateLimiterService,
 	}
+}
+
+func (s *Service) Start() {
+	s.RateLimiterService.Start()
+}
+func (s *Service) Stop() {
+	s.RateLimiterService.Stop()
 }

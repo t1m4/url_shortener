@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -20,14 +21,17 @@ func main() {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 
-	config := configs.LoadConfig()
+	config, err := configs.LoadConfig()
+	if err != nil {
+		panic(fmt.Sprintf("Error while loading config %s", err))
+	}
 	l := logger.New(config)
 	db := db.ConnectDB(config, l)
 	repositories := repositories.New(l, db)
 	services := services.New(config, l, repositories)
 	services.Start()
 	handlers.New(config, l, services)
-	server := &http.Server{Addr: config.SERVER_HOST}
+	server := &http.Server{Addr: config.APP.SERVER_HOST}
 
 	go func() {
 		errChan <- server.ListenAndServe()

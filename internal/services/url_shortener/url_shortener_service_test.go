@@ -25,7 +25,7 @@ type serviceTestData struct {
 
 func fakeNewService(testData serviceTestData) *URLShortenerService {
 	return &URLShortenerService{
-		config:              &configs.Config{DOMAIN: testData.domain},
+		config:              &configs.Config{APP: configs.App{DOMAIN: testData.domain}},
 		shortenerRepository: testData.shortenerResult,
 		getNewLink:          testData.getNewLink,
 		apiClient:           api_client.FakeAPIClient{Result: testData.apiClientResult, Err: testData.apiClientErr},

@@ -23,7 +23,7 @@ func ConnectDB(config *configs.Config, logger logger.Logger) *gorm.DB {
 			},
 		)
 	}
-	db, err := gorm.Open(postgres.Open(config.POSTGRES_DSN), &gormConfig)
+	db, err := gorm.Open(postgres.Open(config.DB.POSTGRES_DSN), &gormConfig)
 
 	logger.Debug("Successfully connect to db: ", db.Name())
 	logger.Info("Successfully connect to db: ", db.Name())

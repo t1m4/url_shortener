@@ -1,0 +1,10 @@
+environment: dev
+
+app:
+  domain: http://localhost:8000
+  server_host: 0.0.0.0:8000
+db:
+  postgres_dsn: postgresql://admin:admin@db:5432/url_shortener
+
+logger:
+  level: DEBUG

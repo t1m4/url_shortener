@@ -31,7 +31,7 @@ func New(config *configs.Config) Logger {
 		configs.InfoLevel:  INFO,
 	}
 	return &logger{
-		level:  logLevelMap[config.LOG_LEVEL],
+		level:  logLevelMap[config.LOGGER.LEVEL],
 		logger: l,
 	}
 }

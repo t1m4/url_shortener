@@ -28,7 +28,7 @@ func New(config *configs.Config, l logger.Logger, services *services.Service) {
 	api.HandleFunc("/check", urlShortenerHandler.UrlChecker).Methods("GET")
 	api.HandleFunc("/short_url", urlShortenerHandler.ShortUrl).Methods("POST")
 	api.HandleFunc("/{url:[a-zA-Z0-9]+}", urlShortenerHandler.RedirectUrl).Methods("GET")
-	api.Use(middleware.CheckRateLimitMiddleware)
+	api.Use(middleware.CheckRateLimitMiddleware, middleware.RecoverMiddleware)
 	http.Handle("/", r)
 
 }

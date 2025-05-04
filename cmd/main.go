@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -31,7 +32,14 @@ func main() {
 	services := services.New(config, l, repositories)
 	services.Start()
 	handlers.New(config, l, services)
-	server := &http.Server{Addr: config.App.ServerHost}
+	jsonConfig, _ := json.Marshal(config)
+	l.Debug(string(jsonConfig))
+	server := &http.Server{
+		Addr:         config.App.ServerHost,
+		ReadTimeout:  config.App.ReadTimeout,
+		WriteTimeout: config.App.WriteTimeout,
+		IdleTimeout:  config.App.IdleTimeout,
+	}
 
 	go func() {
 		errChan <- server.ListenAndServe()

@@ -92,7 +92,7 @@ func (a *apiClient) Get(ctx context.Context, url string) ([]byte, error) {
 
 func New(timeout time.Duration) APIClient {
 	return &apiClient{
-		client:  http.Client{},
+		client:  http.Client{Transport: &http.Transport{DisableKeepAlives: false}},
 		timeout: timeout,
 	}
 }

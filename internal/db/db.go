@@ -24,13 +24,17 @@ func ConnectDB(config *configs.Config, logger logger.Logger) *gorm.DB {
 		)
 	}
 	db, err := gorm.Open(postgres.Open(config.Db.PostgresDsn), &gormConfig)
-
-	logger.Debug("Successfully connect to db: ", db.Name())
-	logger.Info("Successfully connect to db: ", db.Name())
 	if err != nil {
 		logger.Error(err)
 		panic("failed to connect database")
 	}
+	sqlDb, _ := db.DB()
+	sqlDb.SetMaxIdleConns(config.Db.MaxIdleConns)
+	sqlDb.SetMaxOpenConns(config.Db.MaxOpenConns)
+	sqlDb.SetConnMaxLifetime(config.Db.ConnMaxLifetime)
+
+	logger.Debug("Successfully connect to db: ", db.Name())
+	logger.Info("Successfully connect to db: ", db.Name())
 	if err := db.AutoMigrate(&Shortener{}); err != nil {
 		logger.Error(err)
 	}

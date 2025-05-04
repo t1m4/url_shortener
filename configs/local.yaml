@@ -3,8 +3,14 @@ Environment: dev
 App:
   Domain: http://localhost:8000
   ServerHost: 0.0.0.0:8000
+  ReadTimeout: "10s"
+  WriteTimeout: "10s"
+  IdleTimeout: "10s"
 Db:
   PostgresDsn: postgresql://admin:admin@db:5432/url_shortener
+  MaxIdleConns: 10
+  MaxOpenConns: 10
+  ConnMaxLifetime: "1h"
 
 Logger:
   Level: DEBUG

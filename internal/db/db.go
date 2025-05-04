@@ -31,6 +31,8 @@ func ConnectDB(config *configs.Config, logger logger.Logger) *gorm.DB {
 		logger.Error(err)
 		panic("failed to connect database")
 	}
-	db.AutoMigrate(&Shortener{})
+	if err := db.AutoMigrate(&Shortener{}); err != nil {
+		logger.Error(err)
+	}
 	return db
 }

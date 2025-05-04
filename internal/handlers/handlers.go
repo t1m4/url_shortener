@@ -17,7 +17,7 @@ func New(config *configs.Config, l logger.Logger, services *services.Service) {
 	middleware := middleware.New(config, l, services)
 	urlShortenerHandler := url_shortener.New(l, services)
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, you've requested: %s, %s\n", r.URL.Path, time.Now())
+		fmt.Fprintf(w, "Hello, you've requested: %s, %s\n", r.URL.Path, time.Now()) //nolint
 	})
 	fs := http.FileServer(http.Dir("static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))

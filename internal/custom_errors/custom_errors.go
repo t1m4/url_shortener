@@ -2,14 +2,14 @@ package custom_errors
 
 // DB errors
 const (
-	DbError              = "Error while creating"
-	RowDoesNotExistError = "Row does not exist"
+	DbError              = "error while creating"
+	RowDoesNotExistError = "row does not exist"
 )
 
 // Service errors
 const (
-	UrlRequiredError   = "Url is required parameter"
-	MakingRequestError = "Can't make request, invalid url"
+	UrlRequiredError   = "url is required parameter"
+	MakingRequestError = "can't make request, invalid url"
 )
 
 // API client errors
@@ -22,6 +22,6 @@ const (
 
 // Rate limit errors
 const (
-	RateLimitError     = "Rate limit error"
-	InvalidUserIdError = "Invalid user id"
+	RateLimitError     = "rate limit error"
+	InvalidUserIdError = "invalid user id"
 )

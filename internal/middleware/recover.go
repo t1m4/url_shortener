@@ -14,14 +14,12 @@ func (m *Middleware) RecoverMiddleware(next http.Handler) http.Handler {
 			if r := recover(); r != nil {
 				stackTrace := string(debug.Stack())
 				switch errType := r.(type) {
-				case string:
-					err = errors.New(fmt.Sprintf("panic: %s", errType))
-				case error:
-					err = errors.New(fmt.Sprintf("panic: %s", errType))
+				case string, error:
+					err = fmt.Errorf("panic: %s", errType)
 				default:
-					err = errors.New("Unknown error")
+					err = errors.New("unknown error")
 				}
-				m.l.Error("panic:", err, stackTrace)
+				m.l.Error(err, stackTrace)
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		}()

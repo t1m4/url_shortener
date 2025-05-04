@@ -7,7 +7,6 @@ import (
 )
 
 type Repositories struct {
-	l                   logger.Logger
 	ShortenerRepository ShortenerRepository
 }
 

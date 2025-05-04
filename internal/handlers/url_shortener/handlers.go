@@ -31,14 +31,22 @@ func (h *Handler) TestJson(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(m)
 	h.l.Debug("Encoded", string(b), b, reflect.TypeOf(b))
 	var decodedM Message
-	json.Unmarshal(b, &decodedM)
+	err := json.Unmarshal(b, &decodedM)
+	if err != nil {
+		custom_errors.Write400(h.l, "Error while unmarshal", w)
+	}
 	h.l.Debug("Decoded", decodedM)
 
 	b = []byte(`{"Name":"Bob","Food":"Pickle"}`)
 	var decodedString Message
-	json.Unmarshal(b, &decodedString)
+	err = json.Unmarshal(b, &decodedString)
+	if err != nil {
+		custom_errors.Write400(h.l, "Error while unmarshal", w)
+	}
 	h.l.Debug("Decoded string", decodedString)
-	json.NewEncoder(w).Encode(m)
+	if err := json.NewEncoder(w).Encode(m); err != nil {
+		custom_errors.Write400(h.l, "Error while encode", w)
+	}
 }
 
 func (h *Handler) UrlChecker(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +62,7 @@ func (h *Handler) UrlChecker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(result)
+	w.Write(result) // nolint
 
 }
 
@@ -68,7 +76,7 @@ func (h *Handler) ShortUrl(w http.ResponseWriter, r *http.Request) {
 		custom_errors.Write400(h.l, err.Error(), w)
 		return
 	}
-	json.NewEncoder(w).Encode(map[string]string{"newUrl": newUrl})
+	json.NewEncoder(w).Encode(map[string]string{"newUrl": newUrl}) // nolint
 }
 
 func (h *Handler) RedirectUrl(w http.ResponseWriter, r *http.Request) {

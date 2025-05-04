@@ -78,7 +78,7 @@ func (a *apiClient) Get(ctx context.Context, url string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf(custom_errors.MakingAPIRequestError, url, err)
 	}
-	defer response.Body.Close()
+	defer response.Body.Close() // nolint
 	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf(custom_errors.WrongResponseStatusError, response.StatusCode, url)
 	}

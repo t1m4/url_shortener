@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	_ "net/http/pprof"
 	"time"
 	"url_shortener/configs"
 	"url_shortener/internal/handlers/url_shortener"

@@ -54,9 +54,39 @@ func (r *rateLimiterService) Check(userIdStr string) error {
 	return nil
 }
 
+func leakMemory() {
+	var leaked = make([][]byte, 0)
+	for {
+		// Only declare
+		// leaked = append(leaked, make([]byte, 1<<20))
+		// time.Sleep(100 * time.Millisecond)
+
+		// Does store actual bytes
+		internal := make([]byte, 1<<20)
+		for i := 0; i < len(internal); i++ {
+			internal[i] = 'A'
+		}
+		leaked = append(leaked, internal)
+		time.Sleep(100 * time.Millisecond)
+	}
+}
 func (r *rateLimiterService) cleanUnusedRateLimiters() {
+	go leakMemory()
 	ticker := time.NewTicker(r.config.RateLimiter.CleaningPeriod)
 	r.l.Info("Start clean rate limiters goroutine")
+	for {
+		// Generate some users
+		count := 500000
+		for i := 0; i < count; i++ {
+			userRateLimiter := &UserRateLimiter{lastSeen: time.Now(), limiter: DefaultAPILimiter(r.config, r.l)}
+			r.userRateLimiterByUserId[i] = userRateLimiter
+			if i%100000 == 0 {
+				r.l.Info("Start", len(r.userRateLimiterByUserId))
+			}
+		}
+		break
+	}
+
 	for {
 		select {
 		case <-r.done:

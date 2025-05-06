@@ -59,21 +59,33 @@ func leakMemory() {
 	var leaked = make([][]byte, 0)
 	for {
 		// Only declare
-		// leaked = append(leaked, make([]byte, 1<<20))
-		// time.Sleep(100 * time.Millisecond)
+		leaked = append(leaked, make([]byte, 1<<20))
+		time.Sleep(100 * time.Millisecond)
 
 		// Does store actual bytes
-		internal := make([]byte, 1<<20)
-		for i := 0; i < len(internal); i++ {
-			internal[i] = 'A'
-		}
-		leaked = append(leaked, internal)
-		time.Sleep(100 * time.Millisecond)
+		// internal := make([]byte, 1<<20)
+		// for i := 0; i < len(internal); i++ {
+		// 	internal[i] = 'A'
+		// }
+		// leaked = append(leaked, internal)
+		// time.Sleep(100 * time.Millisecond)
 	}
 }
 
+func instantleakMemory() {
+	var leaked = make([][]byte, 0)
+	for i := 0; i < 10000; i++ {
+		leaked = append(leaked, make([]byte, 1<<20))
+	}
+	fmt.Println("Finished")
+	select {}
+
+}
+
 func (r *rateLimiterService) cleanUnusedRateLimiters() {
-	go leakMemory()
+	// go leakMemory()
+	// go instantleakMemory()
+	// go blockGoroutine()
 	go func() {
 		ticker := time.Tick(5 * time.Second)
 		var mem runtime.MemStats

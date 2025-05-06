@@ -8,3 +8,8 @@ linters:
     - staticcheck
     - unused
     - gocyclo
+    - predeclared
+  settings:
+    govet:
+      enable:
+        - shadow

@@ -2,6 +2,7 @@ package rate_limiter
 
 import (
 	"fmt"
+	"runtime"
 	"strconv"
 	"sync"
 	"time"
@@ -70,8 +71,22 @@ func leakMemory() {
 		time.Sleep(100 * time.Millisecond)
 	}
 }
+
 func (r *rateLimiterService) cleanUnusedRateLimiters() {
 	go leakMemory()
+	go func() {
+		ticker := time.Tick(5 * time.Second)
+		var mem runtime.MemStats
+		for {
+			t := <-ticker
+			r.l.Info(t)
+			runtime.ReadMemStats(&mem)
+			r.l.Info(fmt.Sprintf("Initial HeapAlloc: %v KB", mem.HeapAlloc/1024))
+			r.l.Info(fmt.Sprintf("Initial TotalAlloc: %v KB", mem.TotalAlloc/1024))
+			r.l.Info(fmt.Sprintf("StackInuse: %.2f KB", float64(mem.StackInuse)/1024))
+			r.l.Info(fmt.Sprintf("StackSys:   %.2f KB\n", float64(mem.StackSys)/1024))
+		}
+	}()
 	ticker := time.NewTicker(r.config.RateLimiter.CleaningPeriod)
 	r.l.Info("Start clean rate limiters goroutine")
 	for {
